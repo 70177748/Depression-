@@ -1,11 +1,12 @@
 from __future__ import annotations
 from pathlib import Path
+import os
+import zipfile
 import pandas as pd
 import numpy as np
 import streamlit as st
-from filters import detect_columns, add_features, apply_filters
+from filters import detect_columns, add_features
 import charts
-
 st.set_page_config(page_title="Reddit Depression India Dashboard", page_icon="🧠", layout="wide")
 
 CSS = """
@@ -26,6 +27,11 @@ def load_data(uploaded_file=None):
     if uploaded_file is not None:
         name = uploaded_file.name.lower()
         if name.endswith(".csv"):
+            import zipfile
+if os.path.exists("society depression.zip"):
+    with zipfile.ZipFile("society depression.zip") as z:
+        csv_name = [f for f in z.namelist() if f.endswith(".csv")][0]
+        df = pd.read_csv(z.open(csv_name))
             return pd.read_csv(uploaded_file)
         if name.endswith((".xlsx", ".xls")):
             return pd.read_excel(uploaded_file)
